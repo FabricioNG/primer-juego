@@ -26,10 +26,20 @@ export default class Game extends Phaser.Scene {
     this.player = this.physics.add.sprite(100, 450, "ninja");//muestra el sprite del ninja
     this.player.setCollideWorldBounds(true);//agregar colisiones al sprite
 
+    //add shape group
     this.shapesGroup = this.physics.add.group();
-    this.shapesGroup.create(100, 0, "diamond");
-    this.shapesGroup.create(200, 0, "triangle");
-    this.shapesGroup.create(300, 0, "square");
+    //this.shapesGroup = this.physics.add.group();
+    //this.shapesGroup.create(100, 0, "diamond");
+    //this.shapesGroup.create(200, 0, "triangle");
+    //this.shapesGroup.create(300, 0, "square");
+    //create event to add shapes
+    this.time.addEvent({
+      delay: 1500,
+      callback: this.addShape,
+      callbackScope: this,
+      loop: true,
+    });
+
 
     this.cursors = this.input.keyboard.createCursorKeys();//crear cursores
 
@@ -54,5 +64,17 @@ export default class Game extends Phaser.Scene {
     if (this.cursors.up.isDown && this.player.body.touching.down) {
       this.player.setVelocityY(-330);
     }
+  }
+
+  addShape() {
+    // get random shape
+    const randomShape = Phaser.Math.RND.pick(["diamond", "square", "triangle"]);
+
+    // posiciones aleatorias x
+    const randomX = Phaser.Math.RND.between(0,800);
+
+    //add shape to screen
+    this.shapesGroup.create(randomX, 0, randomShape);
+
   }
 }
