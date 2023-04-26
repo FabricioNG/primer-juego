@@ -2,6 +2,7 @@ import { SHAPES  } from "../../utils.js";
 const {TRIANGLE, SQUARE, DIAMOND } = SHAPES;
 
 export default class Game extends Phaser.Scene {
+  score;
   constructor() {
     super("game");
   }
@@ -21,13 +22,13 @@ export default class Game extends Phaser.Scene {
     this.load.image(TRIANGLE, "./assets/images/triangle.png");  
     this.load.image(SQUARE, "./assets/images/square.png");  
     this.load.image("ninja", "./assets/images/ninja.png");  
-    this.load.image("popeye", "./assets/images/popeye.png");  
+    this.load.image("moon", "./assets/images/moon.png");  
   }
 
   create() {
     this.add.image(400, 300, "sky").setScale(0.555);//agrega el cielo o background
 
-    this.add.image(700, 100, "popeye").setScale(0.555);
+    this.add.image(710, 100, "moon").setScale(0.555);
 
     let platforms = this.physics.add.staticGroup();
     platforms.create(400, 568, "ground").setScale(2).refreshBody();//para actualizar ambos colider y se adaoten a la nueva pantalla
@@ -64,7 +65,15 @@ export default class Game extends Phaser.Scene {
       this.collectShape, //funcion que llama cuando player choca con shape
       null, 
       this
-    )
+    );
+
+    //add score on scene
+    this.score = 0;
+    this.scoreText = this.add.text(20, 20, "Score:" + this.score, {
+      frontSize: "32px",
+      frontStyle: "bold",
+      fill: "#FFFFFF",
+    });
   }
  
   update() {
@@ -103,6 +112,9 @@ export default class Game extends Phaser.Scene {
     const shapeName = shape.texture.key;
     this.shapesRecolected[shapeName].count++;
 
-    console.log(this.shapesRecolected)
+    this.score += this.shapesRecolected[shapeName].score;
+    this.scoreText.setText(`Score: ${this.score.toString()}`);
+
+    console.log(this.shapesRecolected);
   }
 }
