@@ -1,13 +1,15 @@
 import { SHAPES  } from "../../utils.js";
-const {TRIANGLE, SQUARE, DIAMOND } = SHAPES;
+const {TRIANGLE, SQUARE, DIAMOND} = SHAPES;
 
 export default class Game extends Phaser.Scene {
   score;
+  gameOver;
   constructor() {
-    super("game");
+    super("Game");
   }
 
   init() {
+    this.gameOver = false;
     this.shapesRecolected = {
       [TRIANGLE]: { count: 0, score: 10 },
       [SQUARE]: { count: 0, score: 20 },
@@ -15,15 +17,6 @@ export default class Game extends Phaser.Scene {
     };
   }
 
-  preload(){
-    this.load.image("sky", "./assets/images/sky.png");
-    this.load.image("ground", "./assets/images/platform.png");    
-    this.load.image(DIAMOND, "./assets/images/diamond.png");    
-    this.load.image(TRIANGLE, "./assets/images/triangle.png");  
-    this.load.image(SQUARE, "./assets/images/square.png");  
-    this.load.image("ninja", "./assets/images/ninja.png");  
-    this.load.image("moon", "./assets/images/moon.png");  
-  }
 
   create() {
     this.add.image(400, 300, "sky").setScale(0.555);//agrega el cielo o background
@@ -32,6 +25,11 @@ export default class Game extends Phaser.Scene {
 
     let platforms = this.physics.add.staticGroup();
     platforms.create(400, 568, "ground").setScale(2).refreshBody();//para actualizar ambos colider y se adaoten a la nueva pantalla
+
+    platforms.create(600, 400, 'ground');
+    platforms.create(50, 250, 'ground');
+    
+
 
     this.player = this.physics.add.sprite(100, 450, "ninja");//muestra el sprite del ninja
     this.player.setCollideWorldBounds(true);//agregar colisiones al sprite
@@ -74,9 +72,34 @@ export default class Game extends Phaser.Scene {
       frontStyle: "bold",
       fill: "#FFFFFF",
     });
+
+    //agregar timer
+    this.timer = 20;
+    this.timerText = this.add.text(750, 20, this.timer, {
+      frontSize: "32px",
+      frontStyle: "bold",
+      fill: "#FFFFFF"
+    });
+
+    this.time.addEvent({
+      delay: 1000,
+      callback: this.onSecond,
+      callbackScope:this,
+      loop: true,
+    }
+
+    )
   }
  
   update() {
+    //condicion para ganar y mostrar escena
+    if (this.score>50) {
+      this.scene.start("Win");
+    }
+    if (this.gameOver) {
+      this.scene.start("Gameover");
+    }
+
     //se actualiza el movimiento del jugador
     if (this.cursors.left.isDown) {
       this.player.setVelocityX(-250);
@@ -101,7 +124,7 @@ export default class Game extends Phaser.Scene {
     const randomX = Phaser.Math.RND.between(0,800);
 
     //add shape to screen
-    this.shapesGroup.create(randomX, 0, randomShape);
+    this.shapesGroup.create(randomX, 0, randomShape).setCircle(25, 7, 7)
 
   }
 
@@ -116,5 +139,13 @@ export default class Game extends Phaser.Scene {
     this.scoreText.setText(`Score: ${this.score.toString()}`);
 
     console.log(this.shapesRecolected);
+  }
+
+  onSecond(){
+    this.timer--;
+    this.timerText.setText (this.timer);
+    if(this.timer <= 0) {
+      this.gameOver = true;
+    }
   }
 }

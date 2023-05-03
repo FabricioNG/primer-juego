@@ -1,5 +1,8 @@
-import game from "./assets/scenes/game.js";
+import Preload from "./assets/scenes/Preload.js";
+import Win from "./assets/scenes/win.js";
 import Game from "./assets/scenes/game.js";
+import Gameover from "./assets/scenes/gameover.js";
+import gameOver from "./assets/scenes/gameover.js";
 
 // Create a new Phaser config object
 const config = {
@@ -28,7 +31,7 @@ const config = {
   // List of scenes to load
   // Only the first scene will be shown
   // Remember to import the scene before adding it to the list
-  scene: [Game],
+  scene: [Preload, Game, Win, gameOver],
 };
 
 // Create a new Phaser game instance
