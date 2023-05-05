@@ -1,5 +1,5 @@
 import { SHAPES  } from "../../utils.js";
-const {TRIANGLE, SQUARE, DIAMOND} = SHAPES;
+const {TRIANGLE, SQUARE, DIAMOND, STAR} = SHAPES;
 
 export default class Preload extends Phaser.Scene {
     constructor() {
@@ -12,6 +12,7 @@ export default class Preload extends Phaser.Scene {
         this.load.image(DIAMOND, "./assets/images/diamond.png");    
         this.load.image(TRIANGLE, "./assets/images/triangle.png");  
         this.load.image(SQUARE, "./assets/images/square.png");  
+        this.load.image(STAR, "./assets/images/star.png");    
         this.load.image("ninja", "./assets/images/ninja.png");  
         this.load.image("moon", "./assets/images/moon.png"); 
         this.load.image("win", "./assets/images/win.jpg");  

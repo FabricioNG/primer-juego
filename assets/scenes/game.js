@@ -1,5 +1,5 @@
 import { SHAPES  } from "../../utils.js";
-const {TRIANGLE, SQUARE, DIAMOND} = SHAPES;
+const {TRIANGLE, SQUARE, DIAMOND, STAR} = SHAPES;
 
 export default class Game extends Phaser.Scene {
   score;
@@ -13,7 +13,8 @@ export default class Game extends Phaser.Scene {
     this.shapesRecolected = {
       [TRIANGLE]: { count: 0, score: 10 },
       [SQUARE]: { count: 0, score: 20 },
-      [DIAMOND]: { count: 0, score: 30}
+      [DIAMOND]: { count: 0, score: 30},
+      [STAR]: { count: 0, score: -10}
     };
   }
 
@@ -74,7 +75,7 @@ export default class Game extends Phaser.Scene {
     });
 
     //agregar timer
-    this.timer = 20;
+    this.timer = 30;
     this.timerText = this.add.text(750, 20, this.timer, {
       frontSize: "32px",
       frontStyle: "bold",
@@ -93,7 +94,10 @@ export default class Game extends Phaser.Scene {
  
   update() {
     //condicion para ganar y mostrar escena
-    if (this.score>50) {
+    if (this.score>100 &&
+      this.shapesRecolected[TRIANGLE].count >= 2
+      && this.shapesRecolected[SQUARE].count >= 2
+      && this.shapesRecolected[DIAMOND].count >= 2) {
       this.scene.start("Win");
     }
     if (this.gameOver) {
@@ -118,7 +122,7 @@ export default class Game extends Phaser.Scene {
 
   addShape() {
     // get random shape
-    const randomShape = Phaser.Math.RND.pick(["diamond", "square", "triangle"]);
+    const randomShape = Phaser.Math.RND.pick(["diamond", "square", "triangle", "star"]);
 
     // posiciones aleatorias x
     const randomX = Phaser.Math.RND.between(0,800);
