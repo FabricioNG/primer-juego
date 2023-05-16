@@ -1,4 +1,4 @@
-import { SHAPES  } from "../../utils.js";
+import { SHAPES, POINTS_PERCENTAGE, POINTS_PERCENTAGE_VALUE_START } from "../../utils.js";
 const {TRIANGLE, SQUARE, DIAMOND, STAR} = SHAPES;
 
 export default class Game extends Phaser.Scene {
@@ -43,7 +43,7 @@ export default class Game extends Phaser.Scene {
     //this.shapesGroup.create(300, 0, "square");
     //create event to add shapes
     this.time.addEvent({
-      delay: 1500,
+      delay: 500,
       callback: this.addShape,
       callbackScope: this,
       loop: true,
@@ -63,6 +63,13 @@ export default class Game extends Phaser.Scene {
       this.shapesGroup,
       this.collectShape, //funcion que llama cuando player choca con shape
       null, 
+      this
+    );
+    this.physics.add.overlap(
+      this.shapesGroup,
+      platforms,
+      this.reduce,
+      null,
       this
     );
 
@@ -128,7 +135,10 @@ export default class Game extends Phaser.Scene {
     const randomX = Phaser.Math.RND.between(0,800);
 
     //add shape to screen
-    this.shapesGroup.create(randomX, 0, randomShape).setCircle(25, 7, 7)
+    this.shapesGroup.create(randomX, 0, randomShape)
+      .setCircle(32, 0, 0)
+      .setBounce(0.8)
+      .setData(POINTS_PERCENTAGE, POINTS_PERCENTAGE_VALUE_START);
 
   }
 
@@ -137,6 +147,10 @@ export default class Game extends Phaser.Scene {
     shape.disableBody(true, true);
 
     const shapeName = shape.texture.key;
+    const percentage = shape.getData(POINTS_PERCENTAGE);
+    const scoreNow = this.shapesRecolected[shapeName].score * percentage;
+
+
     this.shapesRecolected[shapeName].count++;
 
     this.score += this.shapesRecolected[shapeName].score;
@@ -152,4 +166,32 @@ export default class Game extends Phaser.Scene {
       this.gameOver = true;
     }
   }
-}
+
+  reduce(shape, platform) {
+    const shapeName = shape.texture.key;
+  
+    // Verificar si la forma es "star" y no reducir su porcentaje de puntos
+    if (shapeName === STAR) {
+      return;
+    }
+  
+    const newPercentage = shape.getData(POINTS_PERCENTAGE) - 0.25;
+    shape.setData(POINTS_PERCENTAGE, newPercentage);
+  
+    if (newPercentage <= 0) {
+      shape.disableBody(true, true);
+      return;
+    }
+  
+    // Mostrar texto de reducción
+    const text = this.add.text(shape.body.position.x + 10, shape.body.position.y, "-25%", {
+      frontSize: "22px",
+      frontStyle: "bold",
+      fill: "red",
+    });
+  
+    setTimeout(() => {
+      text.destroy();
+    }, 200);
+  }
+}  
