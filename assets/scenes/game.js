@@ -32,7 +32,7 @@ export default class Game extends Phaser.Scene {
     
 
 
-    this.player = this.physics.add.sprite(100, 450, "ninja");//muestra el sprite del ninja
+    this.player = this.physics.add.sprite(100, 450, "ninjamoncho");//muestra el sprite del ninja
     this.player.setCollideWorldBounds(true);//agregar colisiones al sprite
 
     //add shape group
