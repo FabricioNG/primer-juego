@@ -25,6 +25,7 @@ const config = {
     default: "arcade",
     arcade: {
       gravity: { y: 200 },
+      debug: false,
     },
   },
   // List of scenes to load
